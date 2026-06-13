@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linh, em có một câu hỏi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{
+height:100vh;overflow:hidden;color:#fff;
+background:linear-gradient(135deg,#0f172a,#1e293b,#111827);
+}
+#stars{position:fixed;inset:0;overflow:hidden}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.7;animation:twinkle 3s infinite}
+@keyframes twinkle{50%{opacity:.2}}
+.progress{position:fixed;top:18px;left:18px;right:18px;height:4px;background:rgba(255,255,255,.15);border-radius:99px}
+.progress-fill{height:100%;width:0;background:#fff;border-radius:99px;transition:.4s}
+.container{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px;position:relative;z-index:2}
+.story{font-size:32px;line-height:1.6;max-width:700px;min-height:150px}
+.tap{position:fixed;bottom:50px;font-size:13px;opacity:.45}
+.choices{display:none;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:30px}
+.btn{border:none;border-radius:999px;padding:16px 28px;font-size:18px;cursor:pointer;transition:.3s}
+.yes{background:#fff;color:#000}
+.no{background:#1f2937;color:#fff;border:1px solid rgba(255,255,255,.2)}
+.shake{animation:shake .3s}
+@keyframes shake{
+25%{transform:translateX(-5px)}
+50%{transform:translateX(5px)}
+75%{transform:translateX(-3px)}
+}
+.footer{position:fixed;bottom:12px;width:100%;text-align:center;font-size:11px;opacity:.25}
+.confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 3s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="progress"><div class="progress-fill" id="bar"></div></div>
+
+<div class="container">
+<div id="story" class="story"></div>
+
+<div id="choices" class="choices">
+<button id="yesBtn" class="btn yes">🎵 Đi thôi</button>
+<button id="noBtn" class="btn no">😶 Không</button>
+</div>
+
+<div class="tap" id="tap">Chạm vào màn hình để tiếp tục</div>
+</div>
+
+<div class="footer">Made with excessive effort by Hoàng Hải</div>
+
+<script>
+for(let i=0;i<80;i++){
+ let s=document.createElement('div');
+ s.className='star';
+ s.style.left=Math.random()*100+'%';
+ s.style.top=Math.random()*100+'%';
+ s.style.animationDelay=Math.random()*3+'s';
+ document.getElementById('stars').appendChild(s);
+}
+
+const stories=[
+"Chào chị Linh.",
+"Em có một câu hỏi.",
+"Đáng lẽ em có thể nhắn một tin đơn giản.",
+"Nhưng em nghĩ một số lời mời xứng đáng được chuẩn bị tử tế hơn.",
+"Nên em làm cái này.",
+"Có một buổi nhạc em rất muốn đi.",
+"Và em nghĩ sẽ vui hơn nếu có người đi cùng.",
+"Người đầu tiên em nghĩ đến là chị.",
+"Vậy...",
+"Chị có muốn đi cùng em không?"
+];
+
+const noMessages=[
+"Chị chắc chứ?",
+"Em không lường trước trường hợp này.",
+"Em đã test website rất kỹ.<br><br>Nhưng không test nút này.",
+"Có vẻ em cần cải thiện thuật toán.",
+"Hệ thống đang đề xuất chị cân nhắc lại.",
+"Được rồi.<br><br>Em tôn trọng quyết định của chị.<br><br>Nhưng trước khi xác nhận...<br><br>Chị có chắc là muốn bỏ lỡ một buổi nhạc hay không?"
+];
+
+let index=0,noCount=0;
+const story=document.getElementById("story");
+const bar=document.getElementById("bar");
+const choices=document.getElementById("choices");
+const tap=document.getElementById("tap");
+
+function typeText(text){
+ story.innerHTML="";
+ let i=0;
+ const plain=text;
+ const timer=setInterval(()=>{
+   story.innerHTML=plain.slice(0,i++);
+   if(i>plain.length){clearInterval(timer);story.innerHTML=plain;}
+ },22);
+}
+
+function renderStory(){
+ typeText(stories[index]);
+ bar.style.width=((index+1)/stories.length*100)+"%";
+ if(index===stories.length-1){
+   choices.style.display="flex";
+   tap.style.display="none";
+ }
+}
+
+renderStory();
+
+document.body.addEventListener("click",(e)=>{
+ if(e.target.closest("button")) return;
+ if(index<stories.length-1){
+   index++;
+   renderStory();
+ }
+});
+
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+
+noBtn.addEventListener("click",(e)=>{
+ e.stopPropagation();
+ if(noCount<noMessages.length){
+   story.innerHTML=noMessages[noCount];
+   noBtn.classList.remove("shake");
+   void noBtn.offsetWidth;
+   noBtn.classList.add("shake");
+
+   yesBtn.style.transform=`scale(${1+noCount*0.18})`;
+   noBtn.style.transform=`scale(${1-noCount*0.08})`;
+
+   noCount++;
+
+   if(noCount===noMessages.length){
+      noBtn.innerHTML="📅 Để chị xem lịch đã";
+   }
+ }
+});
+
+yesBtn.addEventListener("click",(e)=>{
+ e.stopPropagation();
+
+ for(let i=0;i<120;i++){
+   let c=document.createElement("div");
+   c.className="confetti";
+   c.style.left=Math.random()*100+"vw";
+   c.style.background=`hsl(${Math.random()*360},100%,70%)`;
+   c.style.animationDelay=Math.random()*1+"s";
+   document.body.appendChild(c);
+ }
+
+ document.querySelector(".container").innerHTML=`
+ <div style="font-size:42px;margin-bottom:20px">🎉 Quyết định tuyệt vời.</div>
+ <div style="font-size:20px;opacity:.85">Em sẽ liên hệ chị để chốt lịch nhé 😌</div>
+ `;
+});
+</script>
+</body>
+</html>
