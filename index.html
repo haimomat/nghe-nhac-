@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Linh, em có một câu hỏi</title>
+<title>chị Linh, em có một câu hỏi</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body{
@@ -15,7 +15,7 @@ background:linear-gradient(135deg,#0f172a,#1e293b,#111827);
 @keyframes twinkle{50%{opacity:.2}}
 .progress{position:fixed;top:18px;left:18px;right:18px;height:4px;background:rgba(255,255,255,.15);border-radius:99px}
 .progress-fill{height:100%;width:0;background:#fff;border-radius:99px;transition:.4s}
-.container{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px;position:relative;z-index:2}
+.container{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px;position:relative;z-index:2; overflow-y:auto;}
 .story{font-size:32px;line-height:1.6;max-width:700px;min-height:150px}
 .tap{position:fixed;bottom:50px;font-size:13px;opacity:.45}
 .choices{display:none;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:30px}
@@ -23,6 +23,13 @@ background:linear-gradient(135deg,#0f172a,#1e293b,#111827);
 .yes{background:#fff;color:#000}
 .no{background:#1f2937;color:#fff;border:1px solid rgba(255,255,255,.2)}
 .shake{animation:shake .3s}
+@media (max-width: 768px){
+
+    .story{
+        font-size:24px;
+    }
+
+}
 @keyframes shake{
 25%{transform:translateX(-5px)}
 50%{transform:translateX(5px)}
